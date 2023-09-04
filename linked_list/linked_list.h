@@ -30,20 +30,22 @@ typedef struct node {
 typedef struct linked_list {
     node_t *list_head;
     node_t *list_tail;
+    uint8_t is_empty;
 }linked_list_t;
 
 
 /*** function declaration ***/
-int8_t linked_list_create(linked_list_t **list, int value);
-int8_t linked_list_destroy(linked_list_t **list);
-uint64_t linked_list_size(linked_list_t *list);
-int8_t linked_list_insert_at(linked_list_t **list, uint64_t index, int value);
-// int linked_list_push();
-// int linked_list_append();
+int8_t   linked_list_create   (linked_list_t **list);
+int8_t   linked_list_destroy  (linked_list_t **list);
+int8_t   linked_list_insert_at(linked_list_t **list, uint64_t index, int value);
+int8_t   linked_list_push     (linked_list_t **list, int value);
+int8_t   linked_list_append   (linked_list_t **list, int value);
 // int linked_list_delete_at();
+// int linked_list_pop();
 // int linked_list_remove();
 // int linked_list_reverse();
-int8_t linked_list_print(linked_list_t *list);
+int8_t   linked_list_print    (linked_list_t *list);
+uint64_t linked_list_size     (linked_list_t *list);
 
 
 #endif //_LINKED_LIST_H_

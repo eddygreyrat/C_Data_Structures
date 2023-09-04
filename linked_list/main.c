@@ -14,7 +14,13 @@ int main() {
     int reply = 0;
     _Bool flag = 1;
     linked_list_t *users_list = NULL;
-    // users_list->list_head = NULL; users_list->list_tail = NULL;
+    int err = 0;
+
+    err = linked_list_create(&users_list);
+
+    for (int i = 10; i >= 0; i--) {
+        err = linked_list_append(&users_list, i);
+    }
 
     while (flag) {
         printf("%s", menu);
@@ -27,7 +33,7 @@ int main() {
             case 1:
                 printf("enter value: ");
                 scanf("%d", &reply);
-                linked_list_create(&users_list, reply);
+                linked_list_create(&users_list);
                 break;
             case 2:
                 linked_list_destroy(&users_list);
@@ -47,6 +53,10 @@ int main() {
                 printf("invalid input\n\n");
                 break;
         }
+    }
+
+    if ( linked_list_size(users_list) != 0 ) {
+        linked_list_destroy(&users_list);
     }
     
    

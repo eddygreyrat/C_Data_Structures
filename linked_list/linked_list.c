@@ -17,7 +17,7 @@
 #include <stdio.h>
 
 
-int8_t linked_list_create(linked_list_t **list, int value) {
+int8_t linked_list_create(linked_list_t **list) {
     /**
      * @brief  initialized a linked list object with 'value' stored in the first node
      * 
@@ -30,6 +30,7 @@ int8_t linked_list_create(linked_list_t **list, int value) {
         return 1;
     }
 
+    
     // create list
     if (
         ( *list = (linked_list_t *) malloc(sizeof(linked_list_t)) )
@@ -38,18 +39,10 @@ int8_t linked_list_create(linked_list_t **list, int value) {
         return -1;
     }
 
-    // create first node
-    if (
-        ( (*list)->list_head = (node_t *) malloc(sizeof(node_t)) )
-        == NULL
-    ) {
-        return -1;
-    }
-
-    // init
+    // init list
+    (*list)->list_head = NULL;
     (*list)->list_tail = NULL;
-    (*list)->list_head->item = value;
-    (*list)->list_head->next_node = NULL;
+    (*list)->is_empty = 1;
 
     return 0;
 }
@@ -77,7 +70,6 @@ int8_t linked_list_destroy(linked_list_t **list) {
     }
 
     // danglers begone
-    (*list)->list_head = NULL;
     (*list)->list_tail = NULL;
     *list = NULL;
     temp = NULL;
@@ -93,10 +85,13 @@ uint64_t linked_list_size(linked_list_t *list) {
      * @param  list         the linked list object
      * @return uint64_t     the total number of nodes
     **/
-    if ( list == NULL ) {
+    if ( list == NULL || list->is_empty ) {
         return 0;
     }
     uint_fast64_t counter = 0;
+    /*** although "list" is a local variable, "list_head" is not and is being reference.
+     *   hence, modifing "list_head" in this function will result in a permanent change.
+    ***/
     node_t *temp = list->list_head;
 
     // traverse linked list
@@ -122,7 +117,7 @@ int8_t linked_list_insert_at(linked_list_t **list, uint64_t index, int value) {
         return 1;
     }
 
-    if ( index > linked_list_size(*list) + 1 ) {
+    if ( index > linked_list_size(*list) ) {
         // invalid index
         return 1;
     }
@@ -140,12 +135,17 @@ int8_t linked_list_insert_at(linked_list_t **list, uint64_t index, int value) {
     // insert at head
     if ( index == 0 ) {
         new_node->next_node = (*list)->list_head;
-        (*list)->list_head = new_node;        
+        (*list)->list_head = new_node;
+
+        if ( (*list)->is_empty ) {
+            (*list)->list_tail = (*list)->list_head;
+            (*list)->is_empty = 0;
+        }
         return 0;
     }
 
     // insert at tail
-    if ( index == linked_list_size(*list) + 1 ) {
+    if ( index == linked_list_size(*list) ) {
         (*list)->list_tail = new_node;
         new_node->next_node = NULL;
         return 0;
@@ -154,6 +154,9 @@ int8_t linked_list_insert_at(linked_list_t **list, uint64_t index, int value) {
     // insert inbetween list
     node_t *current_node = (*list)->list_head;
 
+    /*** current node points to node right before insertion point
+     *   when index equals 1. This is required to insert node at appropriate location.
+    ***/
     while ( index != 1 ) {
         current_node = current_node->next_node;
         index--;
@@ -168,12 +171,99 @@ int8_t linked_list_insert_at(linked_list_t **list, uint64_t index, int value) {
 }
 
 
+int8_t linked_list_push(linked_list_t **list, int value) {
+    /**
+     * @brief  adds node to head of list
+     * 
+     * @param  list     the linked list object
+     * @param  value    the value of the new node
+     * @return int8_t   error code
+    **/
+    // check if list exist
+    if ( *list == NULL ) {
+        return 1;
+    }
+
+    // create node
+    node_t *new_node = NULL;
+    if (
+        ( new_node = (node_t *) malloc(sizeof(node_t)) )
+        == NULL
+    ) {
+        return -1;
+    }
+    new_node->item = value;
+
+    // insert to head
+    new_node->next_node = (*list)->list_head;
+    (*list)->list_head = new_node;
+
+    // have tail point towards end of list
+    if ( (*list)->is_empty ) {
+        (*list)->list_tail = (*list)->list_head;
+        (*list)->is_empty = 0;
+    }
+
+    return 0;
+}
+
+
+int8_t linked_list_append(linked_list_t **list, int value) {
+    /**
+     * @brief  adds node to tail of list
+     * 
+     * @param  list     the linked list object
+     * @param  value    the vlaue of the new node
+     * @return int8_t   error code
+    **/
+    // check if list exist
+    if ( *list == NULL ) {
+        return 1;
+    }
+
+    // create node
+    node_t *new_node = NULL;
+    if (
+        ( new_node = (node_t *) malloc(sizeof(node_t)) )
+        == NULL
+    ) {
+        return -1;
+    }
+    new_node->item = value;
+    new_node->next_node = NULL;
+
+    // attach to tail if empty
+    if ( (*list)->list_tail == NULL ) {
+
+        (*list)->list_tail = new_node;
+        (*list)->list_head = (*list)->list_tail;
+        (*list)->is_empty = 0;
+        return 0;
+    }
+
+    // attach to tail
+    (*list)->list_tail->next_node = new_node;
+    (*list)->list_tail = new_node;
+
+    return 0;
+}
+
+
 int8_t linked_list_print(linked_list_t *list) {
-    
+    /**
+     * @brief  prints all the values stored in the linked list.
+     * 
+     * @param  list     the linked list object
+     * @return int8_t   error code
+    **/
+    // check if list is empty
     if ( list == NULL ) {
         return 1;
     }
 
+    /*** although "list" is a local variable, "list_head" is not and is being reference.
+     *   hence, modifing "list_head" in this function will result in a permanent change.
+    ***/
     node_t *temp = list->list_head;
     fprintf(stdout, "linked list: ");
     // traverse linked list
@@ -186,3 +276,5 @@ int8_t linked_list_print(linked_list_t *list) {
     
     return 0;
 }
+
+
