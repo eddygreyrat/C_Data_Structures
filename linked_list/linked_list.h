@@ -5,8 +5,8 @@
  * error codes:
  *   0 = no error
  *   1 = user error
- *  -1 = fatel error 
- * @version 1.4
+ *  -1 = fatal error 
+ * @version 1.5
  * @date 2023-09-02
  * 
  * @copyright Copyright (c) 2023
@@ -18,6 +18,12 @@
 
 /*** includes ***/
 #include <stdint.h>
+
+/*** enums ***/
+enum err_code {
+    LL_EXIT_SUCCESS = 0,
+    LL_EXIT_FATAL = -1
+};
 
 /*** structs ***/
 typedef struct node node_t;
@@ -46,7 +52,7 @@ int8_t   linked_list_remove        (linked_list_t **list);
 int8_t   linked_list_reverse       (linked_list_t **list);
 int8_t   linked_list_print_list    (linked_list_t *list);
 int8_t   linked_list_print_status  (linked_list_t *list);
-int8_t   linked_list_print_err_code(linked_list_t *list);
+void     linked_list_print_err_code(int8_t err_code);
 uint64_t linked_list_size          (linked_list_t *list);
 
 

@@ -5,8 +5,8 @@
  * error codes:
  *   0 = no error
  *   1 = user error
- *  -1 = fatel error 
- * @version 1.4
+ *  -1 = fatal error 
+ * @version 1.5
  * @date 2023-09-02
  * 
  * @copyright Copyright (c) 2023
@@ -23,7 +23,7 @@ int8_t linked_list_create(linked_list_t **list) {
      * 
      * @param  list     the linked list object
      * @param  value    the value to store in the first node
-     * @return int8_t   error code; -1 = fatel error, 0 = no error, 1 = user error
+     * @return int8_t   error code; -1 = fatal error, 0 = no error, 1 = user error
     **/
 
     // check if list already exist
@@ -53,7 +53,7 @@ int8_t linked_list_destroy(linked_list_t **list) {
      * @brief  frees all the memory allocated to a linked list
      * 
      * @param  list     the linked list to free
-     * @return int8_t   error code; -1 = fatel error, 0 = no error, 1 = user error
+     * @return int8_t   error code; -1 = fatal error, 0 = no error, 1 = user error
     **/
     
     // check if list exist
@@ -399,7 +399,7 @@ int8_t linked_list_remove(linked_list_t **list) {
 
 int8_t linked_list_reverse(linked_list_t **list) {
     /**
-     * @brief  
+     * @brief  reverses linked list
      * 
      * @param  list 
      * @return int8_t 
@@ -409,15 +409,96 @@ int8_t linked_list_reverse(linked_list_t **list) {
     if ( *list == NULL || (*list)->size == 0 ) {
         return 1;
     }
+
+    // cant reverse a list with one node
+    if ( (*list)->size == 1 ) {
+        return 0;
+    }
+
+    // cursor nodes to traverse list
+    node_t *prev, *current, *next;
+
+    // set cursor
+    prev = current = (*list)->list_head;
+    next = current->next_node;
+
+    // initial start; make first node as last by having it point to null
+    current->next_node = NULL;
+
+    // reversing algorithm
+    while ( next != NULL ) {
+        // make 'next' node point to 'prev' node using the 'current' variable
+        current = next;
+
+        // save next_node location with the next variable
+        next = current->next_node;
+
+        // have current node point to prev node
+        current->next_node = prev;
+
+        // prev node is no longer needed. current node becomes new prev node
+        prev = current;
+    }
+
+    // head points at the end of list
+    (*list)->list_tail = (*list)->list_head;
+
+    // prev and current both point to front of list now
+    (*list)->list_head = current;
+    
+    return 0;
 }
 
 
 int8_t linked_list_print_status(linked_list_t *list) {
+    /**
+     * @brief  prints all members of list obj.
+     * 
+     * @param  list 
+     * @return int8_t 
+    **/
+    
+    // check if list exist
+    if ( list == NULL ) {
+        return 1;
+    }
 
+    printf(
+        "linked_list_t:\n"
+        "\tlist @%p\n"
+        "\thead @%p\n"
+        "\ttail @%p\n"
+        "\tsize @%p\n",
+        list,
+        list->list_head,
+        list->list_tail,
+        list->size
+    );
+
+    return 0;
 }
 
 
-int8_t   linked_list_print_err_code(linked_list_t *list) {
+void linked_list_print_err_code(int8_t err_code) {
+    /**
+     * @brief  prints a description of the error code returned
+     *         from the linked list API
+     * 
+     * @param  err_code 
+     * @return int8_t  
+    **/
+
+    switch ( err_code ) {
+        case LL_EXIT_SUCCESS:
+            printf("no error occurred\n");
+            break;
+        case LL_EXIT_FATAL:
+            printf("malloc failed\n");
+            break;
+        default:
+            printf("Invalid error code from linked list API\n");
+            break;
+    }
 
 }
 
