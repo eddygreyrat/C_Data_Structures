@@ -6,7 +6,7 @@
  *   0 = no error
  *   1 = user error
  *  -1 = fatel error 
- * @version 1.2
+ * @version 1.4
  * @date 2023-09-02
  * 
  * @copyright Copyright (c) 2023
@@ -28,24 +28,26 @@ typedef struct node {
 }node_t;
 
 typedef struct linked_list {
-    node_t *list_head;
-    node_t *list_tail;
-    uint8_t is_empty;
+    node_t  *list_head; // first node
+    node_t  *list_tail; // last node
+    uint64_t size;      // total nodes
 }linked_list_t;
 
 
 /*** function declaration ***/
-int8_t   linked_list_create   (linked_list_t **list);
-int8_t   linked_list_destroy  (linked_list_t **list);
-int8_t   linked_list_insert_at(linked_list_t **list, uint64_t index, int value);
-int8_t   linked_list_push     (linked_list_t **list, int value);
-int8_t   linked_list_append   (linked_list_t **list, int value);
-// int linked_list_delete_at();
-// int linked_list_pop();
-// int linked_list_remove();
-// int linked_list_reverse();
-int8_t   linked_list_print    (linked_list_t *list);
-uint64_t linked_list_size     (linked_list_t *list);
+int8_t   linked_list_create        (linked_list_t **list);
+int8_t   linked_list_destroy       (linked_list_t **list);
+int8_t   linked_list_insert_at     (linked_list_t **list, uint64_t index, int value);
+int8_t   linked_list_push          (linked_list_t **list, int value);
+int8_t   linked_list_append        (linked_list_t **list, int value);
+int8_t   linked_list_delete_at     (linked_list_t **list, uint64_t index);
+int8_t   linked_list_pop           (linked_list_t **list);
+int8_t   linked_list_remove        (linked_list_t **list);
+int8_t   linked_list_reverse       (linked_list_t **list);
+int8_t   linked_list_print_list    (linked_list_t *list);
+int8_t   linked_list_print_status  (linked_list_t *list);
+int8_t   linked_list_print_err_code(linked_list_t *list);
+uint64_t linked_list_size          (linked_list_t *list);
 
 
 #endif //_LINKED_LIST_H_

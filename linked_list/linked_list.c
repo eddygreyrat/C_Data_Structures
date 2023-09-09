@@ -6,7 +6,7 @@
  *   0 = no error
  *   1 = user error
  *  -1 = fatel error 
- * @version 1.2
+ * @version 1.4
  * @date 2023-09-02
  * 
  * @copyright Copyright (c) 2023
@@ -25,12 +25,12 @@ int8_t linked_list_create(linked_list_t **list) {
      * @param  value    the value to store in the first node
      * @return int8_t   error code; -1 = fatel error, 0 = no error, 1 = user error
     **/
+
     // check if list already exist
     if ( *list != NULL ){
         return 1;
     }
 
-    
     // create list
     if (
         ( *list = (linked_list_t *) malloc(sizeof(linked_list_t)) )
@@ -42,7 +42,7 @@ int8_t linked_list_create(linked_list_t **list) {
     // init list
     (*list)->list_head = NULL;
     (*list)->list_tail = NULL;
-    (*list)->is_empty = 1;
+    (*list)->size = 0;
 
     return 0;
 }
@@ -55,6 +55,7 @@ int8_t linked_list_destroy(linked_list_t **list) {
      * @param  list     the linked list to free
      * @return int8_t   error code; -1 = fatel error, 0 = no error, 1 = user error
     **/
+    
     // check if list exist
     if ( *list == NULL ){
         return 1;
@@ -67,6 +68,13 @@ int8_t linked_list_destroy(linked_list_t **list) {
         temp = (*list)->list_head->next_node;
         free( (*list)->list_head );
         (*list)->list_head = temp;
+
+        (*list)->size--;
+    }
+
+    // something went wrong
+    if ( (*list)->size != 0 ) {
+        return -1;
     }
 
     // danglers begone
@@ -85,22 +93,13 @@ uint64_t linked_list_size(linked_list_t *list) {
      * @param  list         the linked list object
      * @return uint64_t     the total number of nodes
     **/
-    if ( list == NULL || list->is_empty ) {
+
+    // check if list exist
+    if ( list == NULL ) {
         return 0;
     }
-    uint_fast64_t counter = 0;
-    /*** although "list" is a local variable, "list_head" is not and is being reference.
-     *   hence, modifing "list_head" in this function will result in a permanent change.
-    ***/
-    node_t *temp = list->list_head;
-
-    // traverse linked list
-    while ( temp != NULL ) {
-        counter++;
-        temp = temp->next_node;
-    }
-
-    return counter;
+    
+    return list->size;
 }
 
 
@@ -112,18 +111,20 @@ int8_t linked_list_insert_at(linked_list_t **list, uint64_t index, int value) {
      * @param  index    index to insert
      * @return int8_t   error code
     **/
+
+    // check if list exist
     if ( *list == NULL ) {
-        // invalid list
         return 1;
     }
 
-    if ( index > linked_list_size(*list) ) {
-        // invalid index
+    // check if index is in range of list
+    if ( index + 1 > (*list)->size ) {
         return 1;
     }
 
     // create node
     node_t *new_node = NULL;
+
     if (
         ( new_node = (node_t *) malloc(sizeof(node_t)) )
         == NULL
@@ -137,17 +138,23 @@ int8_t linked_list_insert_at(linked_list_t **list, uint64_t index, int value) {
         new_node->next_node = (*list)->list_head;
         (*list)->list_head = new_node;
 
-        if ( (*list)->is_empty ) {
+        if ( (*list)->size == 0 ) {
             (*list)->list_tail = (*list)->list_head;
-            (*list)->is_empty = 0;
         }
+
+        (*list)->size++;
+
         return 0;
     }
 
     // insert at tail
-    if ( index == linked_list_size(*list) ) {
+    if ( index == (*list)->size ) {
+        (*list)->list_tail->next_node = new_node;
         (*list)->list_tail = new_node;
         new_node->next_node = NULL;
+
+        (*list)->size++;
+
         return 0;
     }
 
@@ -165,7 +172,7 @@ int8_t linked_list_insert_at(linked_list_t **list, uint64_t index, int value) {
     new_node->next_node = current_node->next_node;
     current_node->next_node = new_node;
 
-    current_node = NULL;
+    (*list)->size++;
 
     return 0;
 }
@@ -179,6 +186,7 @@ int8_t linked_list_push(linked_list_t **list, int value) {
      * @param  value    the value of the new node
      * @return int8_t   error code
     **/
+   
     // check if list exist
     if ( *list == NULL ) {
         return 1;
@@ -199,10 +207,11 @@ int8_t linked_list_push(linked_list_t **list, int value) {
     (*list)->list_head = new_node;
 
     // have tail point towards end of list
-    if ( (*list)->is_empty ) {
+    if ( (*list)->size == 0 ) {
         (*list)->list_tail = (*list)->list_head;
-        (*list)->is_empty = 0;
     }
+
+    (*list)->size++;
 
     return 0;
 }
@@ -216,6 +225,7 @@ int8_t linked_list_append(linked_list_t **list, int value) {
      * @param  value    the vlaue of the new node
      * @return int8_t   error code
     **/
+    
     // check if list exist
     if ( *list == NULL ) {
         return 1;
@@ -237,19 +247,21 @@ int8_t linked_list_append(linked_list_t **list, int value) {
 
         (*list)->list_tail = new_node;
         (*list)->list_head = (*list)->list_tail;
-        (*list)->is_empty = 0;
+        (*list)->size++;
+
         return 0;
     }
 
     // attach to tail
     (*list)->list_tail->next_node = new_node;
     (*list)->list_tail = new_node;
+    (*list)->size++;
 
     return 0;
 }
 
 
-int8_t linked_list_print(linked_list_t *list) {
+int8_t linked_list_print_list(linked_list_t *list) {
     /**
      * @brief  prints all the values stored in the linked list.
      * 
@@ -265,7 +277,9 @@ int8_t linked_list_print(linked_list_t *list) {
      *   hence, modifing "list_head" in this function will result in a permanent change.
     ***/
     node_t *temp = list->list_head;
+
     fprintf(stdout, "linked list: ");
+    
     // traverse linked list
     while ( temp != NULL ) {
         fprintf(stdout, "%d ", temp->item);
@@ -277,4 +291,133 @@ int8_t linked_list_print(linked_list_t *list) {
     return 0;
 }
 
+
+int8_t linked_list_delete_at(linked_list_t **list, uint64_t index) {
+    /**
+     * @brief  deletes node at a given index
+     * 
+     * @param  list 
+     * @param  index 
+     * @return int8_t 
+    **/
+
+    // list existane or empty list
+    if ( (*list) == NULL || (*list)->size == 0 ) {
+        return 1;
+    }
+
+    // check if index is in range
+    if ( index > (*list)->size - 1 ) {
+        return 1;
+    }
+
+    // traverse list
+    node_t *temp = (*list)->list_head;
+    
+    if ( index == 0 ) {
+        (*list)->list_head = temp->next_node;
+
+        // check if node is the last one in list
+        if ( temp == (*list)->list_tail ) {
+            (*list)->list_tail = NULL;
+        }
+
+        free(temp);
+        (*list)->size--;
+
+        return 0;
+    }
+
+    // temp stops at node right before node at index
+    while ( temp != NULL || index != 1 ) {
+        temp = temp->next_node;
+        index--;
+    }
+
+    // check if deleting last node
+    if ( temp->next_node == (*list)->list_tail ) {
+        (*list)->list_tail = temp;
+    } 
+
+    // delete node
+    free(temp->next_node);
+    (*list)->size--;
+
+    return 0;
+}
+
+
+int8_t linked_list_pop(linked_list_t **list) {
+    /**
+     * @brief  deletes the first node in list
+     * 
+     * @param  list 
+     * @return int8_t 
+    **/
+
+    // check if list exist or is empty
+    if ( *list == NULL || (*list)->size == 0 ) {
+        return 1;
+    }
+    
+    // point to node to delete
+    node_t *temp = (*list)->list_head;
+    (*list)->list_head = temp->next_node;
+
+    // check if theres only one node
+    if ( temp == (*list)->list_tail ) {
+        (*list)->list_tail = NULL;
+    }
+
+    // delete node
+    free(temp);
+    (*list)->size--;
+
+    return 0;
+}
+
+
+int8_t linked_list_remove(linked_list_t **list) {
+    /**
+     * @brief  deletes the last node in list
+     * 
+     * @param  list 
+     * @return int8_t 
+    **/
+    
+    // check if list exist or is empty
+    if ( *list == NULL || (*list)->size == 0 ) {
+        return 1;
+    }
+
+    // (*list)->size - 1 = index of last node in list
+    linked_list_delete_at(list, (*list)->size - 1);
+
+    return 0;
+}
+
+
+int8_t linked_list_reverse(linked_list_t **list) {
+    /**
+     * @brief  
+     * 
+     * @param  list 
+     * @return int8_t 
+    **/
+    
+    // check if list exist or empty
+    if ( *list == NULL || (*list)->size == 0 ) {
+        return 1;
+    }
+}
+
+
+int8_t linked_list_print_status(linked_list_t *list) {
+
+}
+
+
+int8_t   linked_list_print_err_code(linked_list_t *list) {
+
+}
 
