@@ -6,7 +6,7 @@
  *   0 = no error
  *   1 = user error
  *  -1 = fatal error 
- * @version 1.5
+ * @version 1.6
  * @date 2023-09-02
  * 
  * @copyright Copyright (c) 2023
@@ -22,7 +22,8 @@
 /*** enums ***/
 enum err_code {
     LL_EXIT_SUCCESS = 0,
-    LL_EXIT_FATAL = -1
+    LL_EXIT_FATAL = -1,
+    LL_EXIT_USER = 1
 };
 
 /*** structs ***/
