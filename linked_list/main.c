@@ -107,6 +107,7 @@ int main() {
     }
 
     if ( users_list != NULL ) {
+        printf("\ndestroying linked list...");
         linked_list_destroy(&users_list);
     }
     

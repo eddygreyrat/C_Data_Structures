@@ -6,8 +6,8 @@
  *   0 = no error
  *   1 = user error
  *  -1 = fatal error 
- * @version 1.6
- * @date 2023-09-02
+ * @version 1.7
+ * @date 2023-09-09
  * 
  * @copyright Copyright (c) 2023
  * 
@@ -51,6 +51,9 @@ int8_t   linked_list_delete_at     (linked_list_t **list, uint64_t index);
 int8_t   linked_list_pop           (linked_list_t **list);
 int8_t   linked_list_remove        (linked_list_t **list);
 int8_t   linked_list_reverse       (linked_list_t **list);
+int8_t   linked_list_value_at      (linked_list_t *list, uint64_t index); // returns err code not value
+int8_t   linked_list_value_at_head (linked_list_t *list);
+int8_t   linked_list_value_at_tail (linked_list_t *list);
 int8_t   linked_list_print_list    (linked_list_t *list);
 int8_t   linked_list_print_status  (linked_list_t *list);
 void     linked_list_print_err_code(int8_t err_code);

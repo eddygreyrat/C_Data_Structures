@@ -6,8 +6,8 @@
  *   0 = no error
  *   1 = user error
  *  -1 = fatal error 
- * @version 1.6
- * @date 2023-09-02
+ * @version 1.7
+ * @date 2023-09-09
  * 
  * @copyright Copyright (c) 2023
  * 
