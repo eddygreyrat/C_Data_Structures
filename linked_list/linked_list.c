@@ -246,7 +246,7 @@ int8_t linked_list_append(linked_list_t **list, int value) {
 
 int8_t linked_list_delete_at(linked_list_t **list, uint64_t index) {
     /**
-     * @brief  deletes node at a given index. TO DO: has bug
+     * @brief  deletes node at a given index.
      * 
      * @param  list 
      * @param  index 
