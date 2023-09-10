@@ -2,10 +2,26 @@
  * @file linked_list.h
  * @author your name (you@domain.com)
  * @brief linked list library. 
- * error codes:
- *   0 = no error
- *   1 = user error
- *  -1 = fatal error 
+ * TODO: 
+ *  - implement the following;
+ *      - value_at()
+ *      - value_at_head()
+ *      - value_at_tail()
+ *      - replace_at()
+ *      - replace_head()
+ *      - replace_tail()
+ *  - rename functions
+ *      - push() -> prepend
+ *  - MACRO WRAPPER
+ *      - generalize linked list to accept any data types
+ *  - improve 
+ *      - error codes
+ *          - currently only have 3 different error codes
+ *          - add more to be more specific for user to read
+ *      - documentation
+ *          - document .h file 
+ *          - improve function documentation in .c file
+ *  
  * @version 1.7
  * @date 2023-09-09
  * 
@@ -32,13 +48,13 @@ typedef struct node node_t;
 typedef struct node {
     int item;
     node_t *next_node;
-}node_t;
+} node_t;
 
 typedef struct linked_list {
     node_t  *list_head; // first node
     node_t  *list_tail; // last node
     uint64_t size;      // total nodes
-}linked_list_t;
+} linked_list_t;
 
 
 /*** function declaration ***/
