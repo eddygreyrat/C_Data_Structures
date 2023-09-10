@@ -10,8 +10,12 @@
  *      - replace_at()
  *      - replace_head()
  *      - replace_tail()
+ *      - search_value() // returns index if found, null if not
+ *      - sort_bubble()
+ *      - sort_quick()
+ *      - sort_...etc
  *  - rename functions
- *      - push() -> prepend
+ *      - push() -> prepend? might keep current naming convention
  *  - MACRO WRAPPER
  *      - generalize linked list to accept any data types
  *  - improve 
@@ -21,8 +25,8 @@
  *      - documentation
  *          - document .h file 
  *          - improve function documentation in .c file
- * @version 1.7
- * @date 2023-09-09
+ * @version 1.7.1
+ * @date 2023-09-10
  * 
  * @copyright Copyright (c) 2023
  * 
@@ -32,7 +36,12 @@
 #include <stdio.h>
 
 
-int8_t linked_list_create(linked_list_t **list) {
+/*** 
+ * functions to initialize linked list object 
+***/
+int8_t linked_list_create(
+    linked_list_t **list
+) {
     /**
      * @brief  initialized a linked list object with 'value' stored in the first node
      * 
@@ -63,7 +72,9 @@ int8_t linked_list_create(linked_list_t **list) {
 }
 
 
-int8_t linked_list_destroy(linked_list_t **list) {
+int8_t linked_list_destroy(
+    linked_list_t **list
+) {
     /**
      * @brief  frees all the memory allocated to a linked list
      * 
@@ -101,7 +112,14 @@ int8_t linked_list_destroy(linked_list_t **list) {
 }
 
 
-int8_t linked_list_insert_at(linked_list_t **list, uint64_t index, int value) {
+/*** 
+ * functions to add nodes in linked list 
+***/
+int8_t linked_list_insert_at(
+    linked_list_t **list, 
+    uint64_t index, 
+    int value
+) {
     /**
      * @brief  inserts node at index given by user
      * 
@@ -176,7 +194,10 @@ int8_t linked_list_insert_at(linked_list_t **list, uint64_t index, int value) {
 }
 
 
-int8_t linked_list_push(linked_list_t **list, int value) {
+int8_t linked_list_push(
+    linked_list_t **list, 
+    int value
+) {
     /**
      * @brief  adds node to head of list
      * 
@@ -215,7 +236,10 @@ int8_t linked_list_push(linked_list_t **list, int value) {
 }
 
 
-int8_t linked_list_append(linked_list_t **list, int value) {
+int8_t linked_list_append(
+    linked_list_t **list, 
+    int value
+) {
     /**
      * @brief  adds node to tail of list
      * 
@@ -259,7 +283,13 @@ int8_t linked_list_append(linked_list_t **list, int value) {
 }
 
 
-int8_t linked_list_delete_at(linked_list_t **list, uint64_t index) {
+/*** 
+ * functions to delete nodes in linked list 
+***/
+int8_t linked_list_delete_at(
+    linked_list_t **list, 
+    uint64_t index
+) {
     /**
      * @brief  deletes node at a given index.
      * 
@@ -322,7 +352,9 @@ int8_t linked_list_delete_at(linked_list_t **list, uint64_t index) {
 }
 
 
-int8_t linked_list_pop(linked_list_t **list) {
+int8_t linked_list_pop(
+    linked_list_t **list
+) {
     /**
      * @brief  deletes the first node in list
      * 
@@ -352,7 +384,9 @@ int8_t linked_list_pop(linked_list_t **list) {
 }
 
 
-int8_t linked_list_remove(linked_list_t **list) {
+int8_t linked_list_remove(
+    linked_list_t **list
+) {
     /**
      * @brief  deletes the last node in list
      * 
@@ -372,7 +406,68 @@ int8_t linked_list_remove(linked_list_t **list) {
 }
 
 
-int8_t linked_list_reverse(linked_list_t **list) {
+/***
+ * functions to replace values stored in nodes
+***/
+int8_t linked_list_replace_at(
+    linked_list_t **list,
+    uint64_t index,
+    int new_item
+) {
+
+}
+
+
+int8_t linked_list_replace_head(
+    linked_list_t **list,
+    int new_item
+) {
+
+}
+
+
+int8_t linked_list_replace_tail(
+    linked_list_t **list,
+    int new_item
+) {
+
+}
+
+
+/*** 
+ * functions to retrieve values stored in nodes 
+***/
+int8_t linked_list_value_at(
+    linked_list_t *list, 
+    uint64_t index, 
+    int *ret_val
+) {
+
+}
+
+
+int8_t linked_list_value_at_head(
+    linked_list_t *list, 
+    int *ret_val
+) {
+
+}
+
+
+int8_t linked_list_value_at_tail(
+    linked_list_t *list, 
+    int *ret_val
+) {
+
+}
+
+
+/*** 
+ * functions to re-arrange linked list 
+***/
+int8_t linked_list_reverse(
+    linked_list_t **list
+) {
     /**
      * @brief  reverses linked list
      * 
@@ -425,7 +520,12 @@ int8_t linked_list_reverse(linked_list_t **list) {
 }
 
 
-int8_t linked_list_print_list(linked_list_t *list) {
+/*** 
+ * functions to debug linked list 
+***/
+int8_t linked_list_print_list(
+    linked_list_t *list
+) {
     /**
      * @brief  prints all the values stored in the linked list.
      * 
@@ -456,7 +556,9 @@ int8_t linked_list_print_list(linked_list_t *list) {
 }
 
 
-int8_t linked_list_print_status(linked_list_t *list) {
+int8_t linked_list_print_status(
+    linked_list_t *list
+) {
     /**
      * @brief  prints all members of list obj.
      * 
@@ -485,7 +587,9 @@ int8_t linked_list_print_status(linked_list_t *list) {
 }
 
 
-void linked_list_print_err_code(int8_t err_code) {
+void linked_list_print_err_code(
+    int8_t err_code
+) {
     /**
      * @brief  prints a description of the error code returned
      *         from the linked list API
@@ -512,7 +616,9 @@ void linked_list_print_err_code(int8_t err_code) {
 }
 
 
-uint64_t linked_list_size(linked_list_t *list) {
+uint64_t linked_list_size(
+    linked_list_t *list
+) {
     /**
      * @brief  returns the total number of nodes in linked list
      * 
