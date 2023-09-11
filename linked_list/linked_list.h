@@ -10,7 +10,7 @@
  *      - replace_at()
  *      - replace_head()
  *      - replace_tail()
- *      - search_value() // returns index if found, null if not
+ *      - search_for() // returns index if found, null if not
  *      - sort_bubble()
  *      - sort_quick()
  *      - sort_...etc
@@ -25,7 +25,9 @@
  *      - documentation
  *          - document .h file 
  *          - improve function documentation in .c file
- * @version 1.7.1
+ *      - add a overflow check. if uint64_t size == UINT64_MAX
+ *          - stop function from adding to linked list.
+ * @version 1.7.2
  * @date 2023-09-10
  * 
  * @copyright Copyright (c) 2023
@@ -147,6 +149,11 @@ void linked_list_print_err_code(
 );
 uint64_t linked_list_size(
     linked_list_t *list
+);
+int8_t linked_list_search_for(
+    linked_list_t *list,
+    int value,
+    uint64_t *ret_index
 );
 
 

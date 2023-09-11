@@ -10,7 +10,7 @@
  *      - replace_at()
  *      - replace_head()
  *      - replace_tail()
- *      - search_value() // returns index if found, null if not
+ *      - search_for() // returns index if found, null if not
  *      - sort_bubble()
  *      - sort_quick()
  *      - sort_...etc
@@ -25,7 +25,7 @@
  *      - documentation
  *          - document .h file 
  *          - improve function documentation in .c file
- * @version 1.7.1
+ * @version 1.7.2
  * @date 2023-09-10
  * 
  * @copyright Copyright (c) 2023
@@ -43,7 +43,7 @@ int8_t linked_list_create(
     linked_list_t **list
 ) {
     /**
-     * @brief  initialized a linked list object with 'value' stored in the first node
+     * @brief  initialized a linked list object 
      * 
      * @param  list     the linked list object
      * @param  value    the value to store in the first node
@@ -414,7 +414,52 @@ int8_t linked_list_replace_at(
     uint64_t index,
     int new_item
 ) {
+    /**
+     * @brief  replaces node at index given by user
+     * 
+     * @param  list     linked list
+     * @param  index    index to insert
+     * @param  new_item the new value that will replace the old
+     * @return int8_t   error code
+    **/
 
+    // check if list exist
+    if ( *list == NULL ) {
+        return 1;
+    }
+
+    // check if index is in range of list
+    if ( index + 1 > (*list)->size ) {
+        return 1;
+    }
+
+    // replace at head
+    if ( index == 0 ) {
+
+        (*list)->list_head->item = new_item;
+        return 0;
+    }
+
+    // insert at tail
+    if ( index == (*list)->size ) {
+
+        (*list)->list_tail->item = new_item;
+        return 0;
+    }
+
+    // insert inbetween list
+    node_t *current_node = (*list)->list_head;
+
+    /*** current node points to node whos value will be replace
+    ***/
+    while ( index != 0 ) {
+        current_node = current_node->next_node;
+        index--;
+    }
+
+    current_node->item = new_item;
+
+    return 0;
 }
 
 
@@ -422,7 +467,21 @@ int8_t linked_list_replace_head(
     linked_list_t **list,
     int new_item
 ) {
+    /**
+     * @brief  replaces node at index given by user
+     * 
+     * @param  list     linked list
+     * @param  new_item the new value that will replace the old
+     * @return int8_t   error code
+    **/
 
+    // check if list exist or is empty
+    if ( *list == NULL || (*list)->size == 0 ) {
+        return 1;
+    }
+
+    (*list)->list_head->item = new_item;
+    return 0;
 }
 
 
@@ -430,7 +489,22 @@ int8_t linked_list_replace_tail(
     linked_list_t **list,
     int new_item
 ) {
+    /**
+     * @brief  replaces node at index given by user
+     * 
+     * @param  list     linked list
+     * @param  new_item the new value that will replace the old
+     * @return int8_t   error code
+    **/
 
+    // check if list exist or is empty
+    if ( *list == NULL || (*list)->size == 0 ) {
+        return 1;
+    }
+
+    (*list)->list_tail->item = new_item;
+
+    return 0;
 }
 
 
@@ -442,7 +516,52 @@ int8_t linked_list_value_at(
     uint64_t index, 
     int *ret_val
 ) {
+    /**
+     * @brief  retrieve the value from a node at the given index 
+     * 
+     * @param  list     linked list
+     * @param  index    the node location
+     * @param  ret_val  the variable where the value gets stored in
+     * @return int8_t   error code
+    **/
+    
+    // check if list exist or is empty
+    if ( list == NULL || list->size == 0 ) {
+        return 1;
+    }
 
+    // check if index is in range of list
+    if ( index + 1 > list->size ) {
+        return 1;
+    }
+
+    // replace at head
+    if ( index == 0 ) {
+
+        *ret_val = list->list_head->item;
+        return 0;
+    }
+
+    // insert at tail
+    if ( index == list->size ) {
+
+        *ret_val = list->list_tail->item;
+        return 0;
+    }
+
+    // insert inbetween list
+    node_t *current_node = list->list_head;
+
+    /*** current node points to node whos value will be replace
+    ***/
+    while ( index != 0 ) {
+        current_node = current_node->next_node;
+        index--;
+    }
+
+    *ret_val = current_node->item;
+
+    return 0;
 }
 
 
@@ -450,7 +569,21 @@ int8_t linked_list_value_at_head(
     linked_list_t *list, 
     int *ret_val
 ) {
+    /**
+     * @brief  retrieve the value from the first node in the list
+     * 
+     * @param  list     linked list
+     * @param  ret_val  the variable where the value gets stored in
+     * @return int8_t   error code
+    **/
+    
+    // check if list exist or is empty
+    if ( list == NULL || list->size == 0 ) {
+        return 1;
+    }
 
+    *ret_val = list->list_head->item;
+    return 0;
 }
 
 
@@ -458,7 +591,21 @@ int8_t linked_list_value_at_tail(
     linked_list_t *list, 
     int *ret_val
 ) {
+    /**
+     * @brief  retrieve the value from the last node in the list 
+     * 
+     * @param  list     linked list
+     * @param  ret_val  the variable where the value gets stored in
+     * @return int8_t   error code
+    **/
+    
+    // check if list exist or is empty
+    if ( list == NULL || list->size == 0 ) {
+        return 1;
+    }
 
+    *ret_val = list->list_tail->item;
+    return 0;
 }
 
 
@@ -572,11 +719,11 @@ int8_t linked_list_print_status(
     }
 
     printf(
-        "linked_list_t:\n"
+        "\nlinked_list_t:\n"
         "\tlist @%p\n"
         "\thead @%p\n"
         "\ttail @%p\n"
-        "\tsize @%lu\n",
+        "\tsize =%lu\n",
         list,
         list->list_head,
         list->list_tail,
@@ -609,7 +756,11 @@ void linked_list_print_err_code(
             printf("\nimproper use of linked list API\n");
             break;
         default:
-            printf("\nInvalid error code from linked list API\n");
+            printf(
+                "\nthe value: %d, does not get return "
+                "from any linked list API function\n",
+                err_code
+            );
             break;
     }
 
@@ -634,3 +785,47 @@ uint64_t linked_list_size(
     return list->size;
 }
 
+
+int8_t linked_list_search_for(
+    linked_list_t *list,
+    int value,
+    uint64_t *ret_index
+) {
+    /**
+     * @brief  returns the index of the *first* node whos value matches
+     *         the value passed by the user.  
+     * 
+     * @param  list     linked list
+     * @param  value    the value to search for in list
+     * @return int8_t   exit status; each value represents
+     *                  what happen during the function call
+    **/
+    
+    // check if list exist or is empty
+    if ( list == NULL || list->size == 0 ) {
+        return 1;
+    }
+
+    // index of node with matching item
+    uint64_t current_index = 0;
+
+    // cursor node
+    node_t *current_node = list->list_head;
+
+    // traverse list
+    while ( current_node != NULL ) {
+
+        if ( current_node->item == value ) {
+
+            *ret_index = current_index;
+            return 0;
+        }
+
+        // search next node
+        current_node = current_node->next_node;
+        current_index++;
+    }
+
+    // no match found
+    return -1;
+}
