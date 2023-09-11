@@ -4,13 +4,6 @@
  * @brief linked list library. 
  * TODO: 
  *  - implement the following;
- *      - value_at()
- *      - value_at_head()
- *      - value_at_tail()
- *      - replace_at()
- *      - replace_head()
- *      - replace_tail()
- *      - search_for() // returns index if found, null if not
  *      - sort_bubble()
  *      - sort_quick()
  *      - sort_...etc
@@ -25,7 +18,7 @@
  *      - documentation
  *          - document .h file 
  *          - improve function documentation in .c file
- * @version 1.7.2
+ * @version 1.7.3
  * @date 2023-09-10
  * 
  * @copyright Copyright (c) 2023
@@ -723,7 +716,7 @@ int8_t linked_list_print_status(
         "\tlist @%p\n"
         "\thead @%p\n"
         "\ttail @%p\n"
-        "\tsize =%lu\n",
+        "\tsize = %lu\n",
         list,
         list->list_head,
         list->list_tail,
@@ -829,3 +822,4 @@ int8_t linked_list_search_for(
     // no match found
     return -1;
 }
+

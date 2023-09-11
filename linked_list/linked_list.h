@@ -4,13 +4,6 @@
  * @brief linked list library. 
  * TODO: 
  *  - implement the following;
- *      - value_at()
- *      - value_at_head()
- *      - value_at_tail()
- *      - replace_at()
- *      - replace_head()
- *      - replace_tail()
- *      - search_for() // returns index if found, null if not
  *      - sort_bubble()
  *      - sort_quick()
  *      - sort_...etc
@@ -27,7 +20,7 @@
  *          - improve function documentation in .c file
  *      - add a overflow check. if uint64_t size == UINT64_MAX
  *          - stop function from adding to linked list.
- * @version 1.7.2
+ * @version 1.7.3
  * @date 2023-09-10
  * 
  * @copyright Copyright (c) 2023
